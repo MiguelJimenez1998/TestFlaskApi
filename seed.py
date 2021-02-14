@@ -89,45 +89,35 @@ for result in results:
 results = asyncio.run(house())
 
 
-names=[]
-prices=[]
-descriptions=[]
-amenities=[]
-sizes=[]
-images=[]
-adress=[]
+campos=[]
 
 for result in results:
+    
     html_data = result.get('body')
     soup = BeautifulSoup(html_data , 'lxml')
 
     name = soup.find_all(class_="vip-product-info__development__name")
-    for i in name:
-        names.append(i.text)
+    name=name[0].text if len(name) > 0 else ""
 
     price= soup.find_all('strong', limit=1)
-    for i in price:
-        prices.append(i.text)
-    
+    price= price[0].text if len(price) > 0 else ""
+  
     description= soup.find_all(class_="preformated-text",limit=1)
-    for i in description:
-        descriptions.append((i.text).strip())
-    
+    description=(description[0].text).strip() if len(description) > 0 else ""
+
     amenitie = soup.find_all(class_="boolean-attribute-list",limit=1)
-    for i in amenitie:
-       amenities.append((i.text).strip())
+    amenitie = (amenitie[0].text).strip() if len(amenitie) > 0 else ""
 
     size = soup.find_all(class_="vip-product-info__attribute-value",limit=1)
-    for i in size:
-       sizes.append(i.text)
+    size = size[0].text if len(size) > 0 else ""
     
     image = soup.findAll('img',limit=1)
-    for i in image:
-        images.append(i['src'])
+    image = image[0]['src'] if len(image) > 0 else ""
  
-   
     adres = soup.find_all(class_="map-location")
-    for i in adres:
-       adress.append(i.text)
+    adres = adres[0].text if len(adres) > 0 else ""
+
+
+
 
 
