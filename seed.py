@@ -50,7 +50,7 @@ async def page(start_pag=1, pags_ago=dato):
                     fetch(url, session, pag)
                 )
             )
-            pag = (i+1) * 48
+            pag = ((i+1) * 48)+1
 
         pages_content = await asyncio.gather(*tasks) 
         return pages_content
@@ -130,5 +130,4 @@ for result in results:
     for i in adres:
        adress.append(i.text)
 
-print(adress[0])
 
