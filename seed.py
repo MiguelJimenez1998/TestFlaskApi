@@ -95,12 +95,12 @@ descriptions=[]
 amenities=[]
 sizes=[]
 images=[]
+adress=[]
 
 for result in results:
     html_data = result.get('body')
     soup = BeautifulSoup(html_data , 'lxml')
 
-    '''
     name = soup.find_all(class_="vip-product-info__development__name")
     for i in name:
         names.append(i.text)
@@ -124,8 +124,11 @@ for result in results:
     image = soup.findAll('img',limit=1)
     for i in image:
         images.append(i['src'])
-    '''
+ 
+   
+    adres = soup.find_all(class_="map-location")
+    for i in adres:
+       adress.append(i.text)
 
-
-print(images)
+print(adress[0])
 
