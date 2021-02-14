@@ -19,6 +19,7 @@ if __name__ == '__main__':
 
 import asyncio
 from aiohttp import ClientSession
+from bs4 import BeautifulSoup
 import pathlib
 import argparse
 import math
@@ -33,9 +34,9 @@ dato=math.ceil(args.numero/48)
 async def fetch(url, session, pag):
     async with session.get(url) as response:
         html_body = await response.read()
-        return {"body": html_body, "pag": pag}
+        return {"body": html_body, "pag": pag}  
 
-async def main(start_pag=1, pags_ago=dato):
+async def page(start_pag=1, pags_ago=dato):
     html_body = ""
     tasks = []
     pag = start_pag
@@ -54,40 +55,77 @@ async def main(start_pag=1, pags_ago=dato):
         pages_content = await asyncio.gather(*tasks) 
         return pages_content
 
-
-results = asyncio.run(main())
-
-#output_dir = pathlib.Path().resolve() / "snapshots"
-#output_dir.mkdir(parents=True, exist_ok=True)
+results = asyncio.run(page())
 
 
+async def house(start_pag=0, pags_ago=args.numero):
+    html_body = ""
+    tasks = []
 
-from bs4 import BeautifulSoup
+    async with ClientSession() as session: 
+        for i in range(0, pags_ago):
+            pag=i+1
+            url = link_house[i]
+            #print("pag", pag, url)
+            tasks.append(
+                asyncio.create_task(
+                    fetch(url, session, pag)
+                )
+            )
+        pages_content = await asyncio.gather(*tasks) 
+        return pages_content
+
+
+
+
 link_house=[]
 
 for result in results:
-    print(len(results))
-    #current_pag = result.get("pag")
-    '''
     html_data = result.get('body')
     soup = BeautifulSoup(html_data , 'lxml')
     for a in soup.find_all('a', class_="item__info-link"):
          link_house.append(a['href'])
+
+results = asyncio.run(house())
+
+
+names=[]
+prices=[]
+descriptions=[]
+amenities=[]
+sizes=[]
+images=[]
+
+for result in results:
+    html_data = result.get('body')
+    soup = BeautifulSoup(html_data , 'lxml')
+
     '''
-    #output_file = output_dir / f"{current_pag}.html"
-    #output_file.write_text(html_data.decode())
+    name = soup.find_all(class_="vip-product-info__development__name")
+    for i in name:
+        names.append(i.text)
 
-#print(len(link_house))
+    price= soup.find_all('strong', limit=1)
+    for i in price:
+        prices.append(i.text)
+    
+    description= soup.find_all(class_="preformated-text",limit=1)
+    for i in description:
+        descriptions.append((i.text).strip())
+    
+    amenitie = soup.find_all(class_="boolean-attribute-list",limit=1)
+    for i in amenitie:
+       amenities.append((i.text).strip())
 
-#import requests
-#from bs4 import BeautifulSoup
-#soup = BeautifulSoup(html_data , 'lxml')
+    size = soup.find_all(class_="vip-product-info__attribute-value",limit=1)
+    for i in size:
+       sizes.append(i.text)
+    
+    image = soup.findAll('img',limit=1)
+    for i in image:
+        images.append(i['src'])
+    '''
 
 
-#for a in soup.find_all('a', class_="item__info-link"):
- #   print("Found the URL:", a['href']) 
+print(images)
 
-
-
-
-#class="item__info-link"
