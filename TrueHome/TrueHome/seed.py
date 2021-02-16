@@ -77,36 +77,36 @@ def scrapy (num_cantidad):
         soup = BeautifulSoup(html_data , 'lxml')
 
         name = soup.find_all(class_="vip-product-info__development__name")
-        name=name[0].text if len(name) > 0 else ""
+        name=name[0].text if len(name) > 0 else None
 
         price= soup.find_all('strong', limit=1)
-        price= price[0].text if len(price) > 0 else ""
+        price= price[0].text if len(price) > 0 else None
     
         description= soup.find_all(class_="preformated-text",limit=1)
-        description=(description[0].text).strip() if len(description) > 0 else ""
+        description=(description[0].text).strip() if len(description) > 0 else None
 
         amenitie = soup.find_all(class_="boolean-attribute-list",limit=1)
-        amenitie = (amenitie[0].text).strip() if len(amenitie) > 0 else ""
+        amenitie = (amenitie[0].text).strip() if len(amenitie) > 0 else None
 
         size = soup.find_all(class_="vip-product-info__attribute-value",limit=1)
-        size = size[0].text if len(size) > 0 else ""
+        size = size[0].text if len(size) > 0 else None
         
         image = soup.findAll('img',limit=1)
-        image = image[0]['src'] if len(image) > 0 else ""
+        image = image[0]['src'] if len(image) > 0 else None
     
         adress = soup.find_all(class_="map-location")
-        adress = adress[0].text if len(adress) > 0 else ""
+        adress = adress[0].text if len(adress) > 0 else None
         adress = adress.split(",")
         if adress[0].split(" ")[-1].isdigit():
             num=adress[0].split(" ")[-1]
             calle=" ".join(adress[0].split(" ")[:-1])
         else:
-            num=""
+            num=None
             calle=adress[0]
 
-        sett=adress[1] if len(adress) >= 2 else "" 
-        town=adress[2] if len(adress) >= 3 else "" 
-        state=" ".join(adress[3:]) if len(adress) >= 4 else "" 
+        sett=adress[1] if len(adress) >= 2 else None
+        town=adress[2] if len(adress) >= 3 else None
+        state=" ".join(adress[3:]) if len(adress) >= 4 else None
         country="Mexico"
 
         campos.append([name,price,description,amenitie,size,image,[calle,num,sett,town,state,country]])
